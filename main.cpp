@@ -1,16 +1,14 @@
 #include <QtGui/QApplication>
 #include "mainwindow.h"
-
-
 #include <iostream>
 #include <stdlib.h> //Needed for "exit" function
 
 //Include OpenGL header files, so that we can use OpenGL
 #ifdef __APPLE__
 #include <OpenGL/OpenGL.h>
-#include <GLUT/f/glut.h>
+#include <GLUT/glut.h>
 #else
-#include <glut.h>
+#include <GL/glut.h>
 #endif
 
 using namespace std;
@@ -89,27 +87,25 @@ void drawScene() {
 }
 
 int main(int argc, char** argv) {
-        //Initialize GLUT
-        glutInit(&argc, argv);
-        glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-        glutInitWindowSize(400, 400); //Set the window size
-
-        //Create the window
-        glutCreateWindow("Basic Shapes - videotutorialsrock.com");
-        initRendering(); //Initialize rendering
-
-        //Set handler functions for drawing, keypresses, and window resizes
-        glutDisplayFunc(drawScene);
-        glutKeyboardFunc(handleKeypress);
-        glutReshapeFunc(handleResize);
-
-        glutMainLoop(); //Start the main loop.  glutMainLoop doesn't return.
-        return 0; //This line is never reached
-}
-
-
-   /* QApplication a(argc, argv);
+    //Create QApplication window
+    QApplication a(argc, argv);
     MainWindow w;
     w.show();
+    //Initialize GLUT
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitWindowSize(400, 400); //Set the window size
 
-    return a.exec();*/
+    //Create the window
+    glutCreateWindow("Basic Shapes - videotutorialsrock.com");
+    initRendering(); //Initialize rendering
+
+    //Set handler functions for drawing, keypresses, and window resizes
+    glutDisplayFunc(drawScene);
+    glutKeyboardFunc(handleKeypress);
+    glutReshapeFunc(handleResize);
+
+    glutMainLoop(); //Start the main loop.  glutMainLoop doesn't return.
+    return 0; //This line is never reached
+    return a.exec();
+}

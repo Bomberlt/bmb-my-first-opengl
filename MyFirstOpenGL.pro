@@ -17,5 +17,11 @@ HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
 
-LIBS = -C:/glut-3.5/include GLUT
-#-C:/OGLSDK/include OpenGL
+LIBS += -lopengl32 -lglu32
+
+INCLUDEPATH = C:/glut-3.5/include
+
+
+
+
+
