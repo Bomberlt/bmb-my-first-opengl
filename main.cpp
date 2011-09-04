@@ -42,7 +42,8 @@ void handleResize(int w, int h) {
                                    1.0,                   //The near z clipping coordinate
                                    200.0);                //The far z clipping coordinate
 }
-
+float _angle = 30.0f;
+float _cameraAngle = 0.0f;
 //Draws the 3D scene
 void drawScene() {
         //Clear information from last draw
@@ -50,42 +51,78 @@ void drawScene() {
 
         glMatrixMode(GL_MODELVIEW); //Switch to the drawing perspective
         glLoadIdentity(); //Reset the drawing perspective
+        glRotatef (_cameraAngle,0,1,0);
+        glTranslatef (0.0f, 0.0f, -5.0f);//Move forward 5units
 
+        glPushMatrix ();//Save transformations
+        glTranslatef (0.0f, -1.0f, 0);
+        glRotatef (_angle,0,0,1);
         glBegin(GL_QUADS); //Begin quadrilateral coordinates
 
         //Trapezoid
-        glVertex3f(-0.7f, -1.5f, -5.0f);
-        glVertex3f(0.7f, -1.5f, -5.0f);
-        glVertex3f(0.4f, -0.5f, -5.0f);
-        glVertex3f(-0.4f, -0.5f, -5.0f);
+        glVertex3f(-0.7f, -0.5f, 0.0f);
+        glVertex3f(0.7f, -0.5f, 0.0f);
+        glVertex3f(0.4f, 0.5f, 0.0f);
+        glVertex3f(-0.4f, 0.5f, 0.0f);
+
+        glVertex3f(-0.7f, -0.5f, 1.0f);
+        glVertex3f(0.7f, -0.5f, 1.0f);
+        glVertex3f(0.4f, 0.5f, 1.0f);
+        glVertex3f(-0.4f, 0.5f, 1.0f);
 
         glEnd(); //End quadrilateral coordinates
+
+        glPopMatrix(); //Undo the move to the center of the trapezoid
+        glPushMatrix(); //Save the current state of transformations
+        glTranslatef(1.0f, 1.0f, 0.0f); //Move to the center of the pentagon
+        glRotatef (_angle, 0,1,0);
+        glScalef (0.7,0.7,0.7);
 
         glBegin(GL_TRIANGLES); //Begin triangle coordinates
 
         //Pentagon
-        glVertex3f(0.5f, 0.5f, -5.0f);
-        glVertex3f(1.5f, 0.5f, -5.0f);
-        glVertex3f(0.5f, 1.0f, -5.0f);
+        glVertex3f(-0.5f, -0.5f, 0.0f);
+        glVertex3f(0.5f, -0.5f, 0.0f);
+        glVertex3f(-0.5f, 0.0f, 0.0f);
 
-        glVertex3f(0.5f, 1.0f, -5.0f);
-        glVertex3f(1.5f, 0.5f, -5.0f);
-        glVertex3f(1.5f, 1.0f, -5.0f);
+        glVertex3f(-0.5f, 0.0f, 0.0f);
+        glVertex3f(0.5f, -0.5f, 0.0f);
+        glVertex3f(0.5f, 0.0f, 0.0f);
 
-        glVertex3f(0.5f, 1.0f, -5.0f);
-        glVertex3f(1.5f, 1.0f, -5.0f);
-        glVertex3f(1.0f, 1.5f, -5.0f);
+        glVertex3f(-0.5f, 0.0f, 0.0f);
+        glVertex3f(0.5f, 0.0f, 0.0f);
+        glVertex3f(0.0f, 0.5f, 0.0f);
+
+        glEnd();
+
+        glPopMatrix(); //Undo the move to the center of the pentagon
+        glPushMatrix(); //Save the current state of transformations
+        glTranslatef(-1.0f, 1.0f, 0.0f); //Move to the center of the triangle
+        glRotatef (_angle,1,0,0);
+
+        glBegin (GL_TRIANGLES);
 
         //Triangle
-        glVertex3f(-0.5f, 0.5f, -5.0f);
-        glVertex3f(-1.0f, 1.5f, -5.0f);
-        glVertex3f(-1.5f, 0.5f, -5.0f);
+        glVertex3f(0.5f, -0.5f, 0.0f);
+        glVertex3f(0.0f, 0.5f, 0.0f);
+        glVertex3f(-0.5f, -0.5f, 0.0f);
 
         glEnd(); //End triangle coordinates
+        glPopMatrix ();
 
         glutSwapBuffers(); //Send the 3D scene to the screen
 }
+void update(int value) {
+    _angle += 2.0f;
+    if (_angle > 360) {
+        _angle -= 360;
+    }
 
+    glutPostRedisplay(); //Tell GLUT that the scene has changed
+
+    //Tell GLUT to call update again in 25 milliseconds
+    glutTimerFunc(25, update, 0);
+}
 int main(int argc, char** argv) {
     //Create QApplication window
     QApplication a(argc, argv);
@@ -104,7 +141,7 @@ int main(int argc, char** argv) {
     glutDisplayFunc(drawScene);
     glutKeyboardFunc(handleKeypress);
     glutReshapeFunc(handleResize);
-
+    glutTimerFunc(25, update, 0); //Add a timer
     glutMainLoop(); //Start the main loop.  glutMainLoop doesn't return.
     return 0; //This line is never reached
     return a.exec();

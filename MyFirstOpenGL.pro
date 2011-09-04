@@ -17,9 +17,10 @@ HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
 
-LIBS += -lopengl32 -lglu32
+LIBS += -lopengl32 -lglu32# -glut32
 
 INCLUDEPATH = C:/glut-3.5/include
+LIBS += C:/glut-3.7.6-bin/glut32.lib
 
 
 
