@@ -44,6 +44,34 @@ void handleResize(int w, int h) {
 }
 float _angle = 30.0f;
 float _cameraAngle = 0.0f;
+
+void drawFractal(int num)
+{
+ switch(num) {
+   case 0:
+     glRotatef (_angle, 1,2,0);
+                glBegin( GL_TRIANGLES );
+                glVertex3f( 1.0, 0.0, 0.0 );
+                glVertex3f( 0.0, 1.0, 0.0 );
+                glVertex3f( 0.0, 0.0, 0.0 );
+                glEnd();
+        break;
+   default:
+        glPushMatrix();
+        glPushMatrix();
+        glScalef(0.5,0.5,1.0);
+        drawFractal(num - 1);
+        glPopMatrix();
+        glTranslatef(0.5,0.0,0.0);
+        glScalef(0.5,0.5,1.0);
+        drawFractal(num - 1);
+        glPopMatrix();
+        glTranslatef(0.0,0.5,0.0);
+        glScalef(0.5,0.5,0.5);
+        drawFractal(num - 1);
+        break;
+ }
+}
 //Draws the 3D scene
 void drawScene() {
         //Clear information from last draw
@@ -109,6 +137,9 @@ void drawScene() {
 
         glEnd(); //End triangle coordinates
         glPopMatrix ();
+
+        int num = 3;
+        drawFractal(num);
 
         glutSwapBuffers(); //Send the 3D scene to the screen
 }
