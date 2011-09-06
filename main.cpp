@@ -26,6 +26,11 @@ void handleKeypress(unsigned char key, //The key that was pressed
 void initRendering() {
         //Makes 3D drawing work when something is in front of something else
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);
+        glEnable(GL_NORMALIZE);
+        glEnable(GL_COLOR_MATERIAL);
+        glClearColor(0.7f, 0.9f, 1.0f, 1.0f);
 }
 
 //Called when the window is resized
@@ -82,21 +87,34 @@ void drawScene() {
         glRotatef (_cameraAngle,0,1,0);
         glTranslatef (0.0f, 0.0f, -5.0f);//Move forward 5units
 
+        //Add ambient light
+        GLfloat ambientColor[] = {0.2f, 0.2f, 0.2f, 1.0f}; //Color(0.2, 0.2, 0.2)
+        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
+
+        //Add positioned light
+        GLfloat lightColor0[] = {0.5f, 0.5f, 0.5f, 1.0f}; //Color (0.5, 0.5, 0.5)
+        GLfloat lightPos0[] = {4.0f, 0.0f, 1.25f, 1.0f}; //Positioned at (4, 0, 8)
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
+        glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
+
         glPushMatrix ();//Save transformations
         glTranslatef (0.0f, -1.0f, 0);
-        glRotatef (_angle,0,0,1);
+        glRotatef (_angle,1,0,0);
         glBegin(GL_QUADS); //Begin quadrilateral coordinates
 
         //Trapezoid
+        glColor3f(0.0f, 1.0f, 0.0f);
         glVertex3f(-0.7f, -0.5f, 0.0f);
         glVertex3f(0.7f, -0.5f, 0.0f);
+        glColor3f(1.0f, 0.75f, 0.0f);
         glVertex3f(0.4f, 0.5f, 0.0f);
         glVertex3f(-0.4f, 0.5f, 0.0f);
 
-        glVertex3f(-0.7f, -0.5f, 1.0f);
-        glVertex3f(0.7f, -0.5f, 1.0f);
-        glVertex3f(0.4f, 0.5f, 1.0f);
-        glVertex3f(-0.4f, 0.5f, 1.0f);
+        glVertex3f(0.4f, 0.5f, 0.0f);
+        glVertex3f(-0.4f, 0.5f, 0.0f);
+        glColor3f(0.0f, 1.0f, 0.0f);
+        glVertex3f(-0.7f, -0.5f, 0.5f);
+        glVertex3f(0.7f, -0.5f, 0.5f);
 
         glEnd(); //End quadrilateral coordinates
 
@@ -108,20 +126,56 @@ void drawScene() {
 
         glBegin(GL_TRIANGLES); //Begin triangle coordinates
 
-        //Pentagon
+        //Pentagon frontside
+        glNormal3f(0.0f, 0.0f, -0.5f);
         glVertex3f(-0.5f, -0.5f, 0.0f);
         glVertex3f(0.5f, -0.5f, 0.0f);
         glVertex3f(-0.5f, 0.0f, 0.0f);
 
+        glNormal3f(0.0f, 0.0f, -0.5f);
         glVertex3f(-0.5f, 0.0f, 0.0f);
         glVertex3f(0.5f, -0.5f, 0.0f);
         glVertex3f(0.5f, 0.0f, 0.0f);
 
+        glNormal3f(0.0f, 0.0f, -0.5f);
         glVertex3f(-0.5f, 0.0f, 0.0f);
         glVertex3f(0.5f, 0.0f, 0.0f);
         glVertex3f(0.0f, 0.5f, 0.0f);
 
+        //Pentagon backside
+        glNormal3f(0.0f, 0.0f, 0.5f);
+        glVertex3f(-0.5f, -0.5f, 0.5f);
+        glVertex3f(0.5f, -0.5f, 0.5f);
+        glVertex3f(-0.5f, 0.0f, 0.5f);
+
+        glNormal3f(0.0f, 0.0f, 0.5f);
+        glVertex3f(-0.5f, 0.0f, 0.5f);
+        glVertex3f(0.5f, -0.5f, 0.5f);
+        glVertex3f(0.5f, 0.0f, 0.5f);
+
+        glNormal3f(0.0f, 0.0f, 0.5f);
+        glVertex3f(-0.5f, 0.0f, 0.5f);
+        glVertex3f(0.5f, 0.0f, 0.5f);
+        glVertex3f(0.0f, 0.5f, 0.5f);
+
         glEnd();
+        glBegin(GL_QUADS); //Begin quadrilateral coordinates
+        //Pentagon rightside
+        glNormal3f(0.5f, 0.0f, 0.0f);
+        glVertex3f(0.5f, 0.0f, 0.5f);
+        glVertex3f(0.5f, -0.5f, 0.5f);
+        glVertex3f(0.5f, -0.5f, 0.0f);
+        glVertex3f(0.5f, 0.0f, 0.0f);
+
+        //Pentagon leftside
+        glNormal3f(-0.5f, 0.0f, 0.0f);
+        glVertex3f(-0.5f, 0.0f, 0.5f);
+        glVertex3f(-0.5f, -0.5f, 0.5f);
+        glVertex3f(-0.5f, -0.5f, 0.0f);
+        glVertex3f(-0.5f, 0.0f, 0.0f);
+
+        glEnd();
+
 
         glPopMatrix(); //Undo the move to the center of the pentagon
         glPushMatrix(); //Save the current state of transformations
@@ -138,7 +192,7 @@ void drawScene() {
         glEnd(); //End triangle coordinates
         glPopMatrix ();
 
-        int num = 3;
+        int num = 5;
         drawFractal(num);
 
         glutSwapBuffers(); //Send the 3D scene to the screen
