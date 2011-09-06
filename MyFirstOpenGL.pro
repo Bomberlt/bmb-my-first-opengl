@@ -10,12 +10,12 @@ TARGET = MyFirstOpenGL
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        mainwindow.cpp
+SOURCES += main.cpp#\
+        #mainwindow.cpp
 
-HEADERS  += mainwindow.h
+#HEADERS  += mainwindow.h
 
-FORMS    += mainwindow.ui
+#FORMS    += mainwindow.ui
 
 LIBS += -lopengl32 -lglu32# -glut32
 

@@ -1,5 +1,3 @@
-#include <QtGui/QApplication>
-#include "mainwindow.h"
 #include <iostream>
 #include <stdlib.h> //Needed for "exit" function
 
@@ -209,10 +207,6 @@ void update(int value) {
     glutTimerFunc(25, update, 0);
 }
 int main(int argc, char** argv) {
-    //Create QApplication window
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
     //Initialize GLUT
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
@@ -229,5 +223,4 @@ int main(int argc, char** argv) {
     glutTimerFunc(25, update, 0); //Add a timer
     glutMainLoop(); //Start the main loop.  glutMainLoop doesn't return.
     return 0; //This line is never reached
-    return a.exec();
 }
